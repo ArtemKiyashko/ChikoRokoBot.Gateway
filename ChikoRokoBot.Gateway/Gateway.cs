@@ -64,7 +64,7 @@ namespace ChikoRokoBot.Gateway
 
                 await _tableClient.AddEntityAsync(newUserEntity);
 
-                await _telegramBotClient.SendTextMessageAsync(tgUpdate.Message.Chat.Id, "Окей вы пописаны на оповещения о новой дичи!");
+                await _telegramBotClient.SendTextMessageAsync(tgUpdate.Message.Chat.Id, "Окей вы подписаны на оповещения о новой дичи!");
             }
             return new OkResult();
         }
