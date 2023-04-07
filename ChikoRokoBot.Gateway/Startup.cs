@@ -1,6 +1,9 @@
 ﻿using System;
 using Azure.Data.Tables;
 using Azure.Identity;
+using Azure.Storage.Queues;
+using ChikoRokoBot.Gateway.Interfaces;
+using ChikoRokoBot.Gateway.Managers;
 using ChikoRokoBot.Gateway.Options;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Azure;
@@ -28,11 +31,18 @@ namespace ChikoRokoBot.Gateway
             builder.Services.AddAzureClients(clientBuilder => {
                 clientBuilder.UseCredential(new DefaultAzureCredential());
                 clientBuilder.AddTableServiceClient(_gatewayOptions.StorageAccount);
+                clientBuilder
+                    .AddQueueServiceClient(_gatewayOptions.StorageAccount)
+                    .ConfigureOptions((options) => { options.MessageEncoding = QueueMessageEncoding.Base64; });
             });
 
-            builder.Services.AddScoped<TableClient>((factory) => {
-                var service = factory.GetRequiredService<TableServiceClient>();
-                var client = service.GetTableClient(_gatewayOptions.UsersTableName);
+            builder.Services.AddScoped<BotStatusManager>();
+            builder.Services.AddScoped<MessageManager>();
+            builder.Services.AddSingleton<IManagerFactory, ManagerFactory>();
+
+            builder.Services.AddScoped<QueueClient>((factory) => {
+                var service = factory.GetRequiredService<QueueServiceClient>();
+                var client = service.GetQueueClient(_gatewayOptions.NotificationQueueName);
                 client.CreateIfNotExists();
                 return client;
             });
