@@ -29,6 +29,8 @@ namespace ChikoRokoBot.Gateway
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] Update tgUpdate,
             ILogger log)
         {
+            log.LogInformation($"Update received: {JsonConvert.SerializeObject(tgUpdate)}");
+
             var manager = _managerFactory.GetManager(tgUpdate.Type);
 
             if (manager is null) return new OkResult();
