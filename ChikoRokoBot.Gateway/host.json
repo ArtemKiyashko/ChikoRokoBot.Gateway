@@ -8,6 +8,9 @@
             },
             "snapshotConfiguration": {
                 "isEnabled": true
+            },
+            "logLevel": {
+                "ChikoRokoBot.Gateway.Commands.CurrentDropsCommand": "Information"
             }
         }
     }

@@ -20,6 +20,7 @@ namespace ChikoRokoBot.Gateway.Models
         public string Slug { get; set; }
         public RarityTypes? RarityType { get; set; }
         public string DropJson { get; set; }
+        public int? BlindBoxId { get; set; }
     }
 }
 

@@ -17,6 +17,8 @@
     <None Remove="Models\" />
     <None Remove="Managers\" />
     <None Remove="Interfaces\" />
+    <None Remove="Infrastructure\" />
+    <None Remove="Commands\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
@@ -32,5 +34,7 @@
     <Folder Include="Models\" />
     <Folder Include="Managers\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="Infrastructure\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
 </Project>
