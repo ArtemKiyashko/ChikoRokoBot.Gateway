@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Azure.Data.Tables;
 using ChikoRokoBot.Gateway.Interfaces;
+using ChikoRokoBot.Gateway.Models;
 using ChikoRokoBot.Gateway.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,24 +12,30 @@ namespace ChikoRokoBot.Gateway.Managers
 {
 	public class BotStatusManager : IMessageManager
     {
-        private const string PARTIOTION_NAME = "primary";
-
         private readonly TableClient _usersTableClient;
+        private readonly GatewayOptions _options;
         private ILogger _logger;
 
-        public BotStatusManager(TableServiceClient tableServiceClient, IOptions<GatewayOptions> options)
+        public BotStatusManager(
+            TableServiceClient tableServiceClient,
+            IOptions<GatewayOptions> options,
+            ILogger<BotStatusManager> logger)
 		{
+            _options = options.Value;
+            _logger = logger;
             _usersTableClient = tableServiceClient.GetTableClient(options.Value.UsersTableName);
             _usersTableClient.CreateIfNotExists();
         }
 
-        public async Task<IActionResult> ProcessMessage(Update tgUpdate, ILogger logger)
+        public async Task<IActionResult> ProcessMessage(Update tgUpdate)
         {
-            _logger = logger;
             if (tgUpdate.MyChatMember.NewChatMember.Status == Telegram.Bot.Types.Enums.ChatMemberStatus.Kicked)
+            {
                 await _usersTableClient.DeleteEntityAsync(
-                    PARTIOTION_NAME,
+                    _options.UserPartitionKey,
                     tgUpdate.MyChatMember.Chat.Id.ToString());
+            }
+
             return new OkResult();
         }
     }

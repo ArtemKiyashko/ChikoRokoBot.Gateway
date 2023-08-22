@@ -30,7 +30,7 @@ namespace ChikoRokoBot.Gateway
 
             if (manager is null) return new OkResult();
 
-            return await manager.ProcessMessage(tgUpdate, log);
+            return await manager.ProcessMessage(tgUpdate);
         }
     }
 }

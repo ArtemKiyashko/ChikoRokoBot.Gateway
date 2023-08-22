@@ -1,7 +1,6 @@
-﻿using System;
-using Azure.Data.Tables;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Azure.Storage.Queues;
+using ChikoRokoBot.Gateway.ChatEvents;
 using ChikoRokoBot.Gateway.Commands;
 using ChikoRokoBot.Gateway.Interfaces;
 using ChikoRokoBot.Gateway.Managers;
@@ -51,6 +50,9 @@ namespace ChikoRokoBot.Gateway
             builder.Services.AddScoped<IBotCommandFactory, BotCommandFactory>();
             builder.Services.AddScoped<ICommand, NewUserCommand>();
             builder.Services.AddScoped<ICommand, CurrentDropsCommand>();
+
+            builder.Services.AddScoped<IChatEventFactory, ChatEventFactory>();
+            builder.Services.AddScoped<IChatEvent, ChatMigrateEvent>();
 
             builder.Services.AddScoped<ITelegramBotClient>(factory => new TelegramBotClient(_gatewayOptions.TelegramBotToken));
         }

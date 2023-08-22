@@ -8,7 +8,7 @@ namespace ChikoRokoBot.Gateway.Interfaces
 {
 	public interface IMessageManager
 	{
-        Task<IActionResult> ProcessMessage(Update tgUpdate, ILogger logger);
+        Task<IActionResult> ProcessMessage(Update tgUpdate);
     }
 }
 
