@@ -8,12 +8,12 @@
             },
             "snapshotConfiguration": {
                 "isEnabled": true
-            },
-            "logLevel": {
-                "ChikoRokoBot.Gateway.Commands.CurrentDropsCommand": "Information",
-                "ChikoRokoBot.Gateway.Managers.MessageManager": "Information",
-                "ChikoRokoBot.Gateway.Managers.BotStatusManager": "Information"
             }
+        },
+        "logLevel": {
+            "ChikoRokoBot.Gateway.Commands.CurrentDropsCommand": "Information",
+            "ChikoRokoBot.Gateway.Managers.MessageManager": "Information",
+            "ChikoRokoBot.Gateway.Managers.BotStatusManager": "Information"
         }
     }
 }
