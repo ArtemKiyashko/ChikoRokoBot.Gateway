@@ -21,6 +21,8 @@ namespace ChikoRokoBot.Gateway.Models
         public RarityTypes? RarityType { get; set; }
         public string DropJson { get; set; }
         public int? BlindBoxId { get; set; }
+        public string ModelUrlUsdz { get; set; }
+        public string ModelUrlGlb { get; set; }
     }
 }
 

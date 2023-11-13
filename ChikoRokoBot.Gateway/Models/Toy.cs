@@ -29,6 +29,10 @@ namespace ChikoRokoBot.Gateway.Models
         [property: JsonPropertyName("collections")] IReadOnlyList<ToyCollection> Collections,
         [property: JsonPropertyName("rarity")] ToyRarity Rarity,
         [property: JsonPropertyName("stores")] IReadOnlyList<Store> Stores
-    );
+    )
+    {
+        public string ModelUrlUsdz { get; set; }
+        public string ModelUrlGlb { get; set; }
+    }
 }
 

@@ -48,10 +48,15 @@ namespace ChikoRokoBot.Gateway.Commands
             foreach (var uniqueDrop in uniqueDrops)
                 try
                 {
+                    var drop = JsonSerializer.Deserialize<Drop>(uniqueDrop.DropJson);
+
+                    drop.Toy.ModelUrlUsdz = uniqueDrop.ModelUrlUsdz;
+                    drop.Toy.ModelUrlGlb = uniqueDrop.ModelUrlGlb;
+
                     var userDrop = new UserDrop(
                         tgUpdate.Message.Chat.Id,
                         tgUpdate.Message.MessageThreadId,
-                        JsonSerializer.Deserialize<Drop>(uniqueDrop.DropJson));
+                        drop);
 
                     await _queueClient.SendMessageAsync(JsonSerializer.Serialize(userDrop));
                 }
