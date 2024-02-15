@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Data.Tables;
 using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using ChikoRokoBot.Gateway.Infrastructure;
 using ChikoRokoBot.Gateway.Interfaces;
 using ChikoRokoBot.Gateway.Models;
@@ -11,6 +12,8 @@ using ChikoRokoBot.Gateway.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 
 namespace ChikoRokoBot.Gateway.Commands
@@ -20,24 +23,30 @@ namespace ChikoRokoBot.Gateway.Commands
         private readonly TableClient _dropsTableClient;
         private readonly QueueClient _queueClient;
         private readonly ILogger<CurrentDropsCommand> _logger;
+        private readonly ITelegramBotClient _telegramBotClient;
         private readonly GatewayOptions _options;
 
         public CurrentDropsCommand(
             TableServiceClient tableServiceClient,
             QueueClient queueClient,
             IOptions<GatewayOptions> options,
-            ILogger<CurrentDropsCommand> logger)
+            ILogger<CurrentDropsCommand> logger,
+            ITelegramBotClient telegramBotClient)
 		{
             _dropsTableClient = tableServiceClient.GetTableClient(options.Value.DropsTableName);
             _dropsTableClient.CreateIfNotExists();
 
             _queueClient = queueClient;
             _logger = logger;
+            _telegramBotClient = telegramBotClient;
             _options = options.Value;
         }
 
         public async Task<IActionResult> ProcessCommand(Update tgUpdate)
         {
+            if (!await TryNotifyProgress(tgUpdate, "Working..."))
+                return new OkResult();
+
             var currentDrops = _dropsTableClient.QueryAsync<DropTableEntity>($"PartitionKey eq '{_options.DropPartitionKey}' and Finish gt datetime'{DateTime.UtcNow.ToString("o")}'");
 
             var uniqueDrops = new HashSet<DropTableEntity>(new DropEqualityComparer());
@@ -68,6 +77,20 @@ namespace ChikoRokoBot.Gateway.Commands
                         $"DropId: {uniqueDrop.RowKey}");
                 }
             return new OkResult();
+        }
+
+        private async Task<bool> TryNotifyProgress(Update tgUpdate, string message)
+        {
+            try
+            {
+                await _telegramBotClient.SendTextMessageAsync(tgUpdate.Message.Chat.Id, message, tgUpdate.Message.MessageThreadId);
+                return true;
+            }
+            catch (ApiRequestException ex) when (ex.ErrorCode == 403)
+            {
+                _logger.LogError(ex, $"User restricted bot access. ChatId: {tgUpdate.Message.Chat.Id}");
+            }
+            return false;
         }
     }
 }
