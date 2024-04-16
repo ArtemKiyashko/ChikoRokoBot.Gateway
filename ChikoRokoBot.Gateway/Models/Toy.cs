@@ -12,7 +12,7 @@ namespace ChikoRokoBot.Gateway.Models
         [property: JsonPropertyName("supplied")] int? Supplied,
         [property: JsonPropertyName("reserved")] int? Reserved,
         [property: JsonPropertyName("imageid")] string Imageid,
-        [property: JsonPropertyName("raritytype")] RarityTypes RarityType,
+        [property: JsonPropertyName("raritytype")] RarityTypes? RarityType,
         [property: JsonPropertyName("authorid")] int? Authorid,
         [property: JsonPropertyName("likescount")] int? Likescount,
         [property: JsonPropertyName("owned")] int? Owned,
